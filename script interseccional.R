@@ -1,5 +1,7 @@
-library(ggplot2); library(tidyverse); library(stringr)
+library(ggplot2); library(tidyverse); library(stringr); library(fifer)
 
+# desactivamos la notación científica, y redondeamos a dos
+options(scipen = 999, digits = 2)
 
 #importamos la data, notar que aunque es csv, excel los exporta como ";"
 casen <- read.csv("casen_2017.csv", sep = ";")
@@ -40,5 +42,30 @@ ggplot(na.omit(casen_mayores)) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   labs(x="", y= "Proporción", fill= "Quintil autónomo\nnacional")
+
+
+# exploración con chi cuadrado
+chisq.test(casen_mayores$sexo2, casen_mayores$multidimensional_5)
+chisq.post.hoc(table(casen_mayores$sexo2, casen_mayores$multidimensional_5))
+
+
+# paparando el set específico para los test
+df_trabajo <- casen_mayores[,c(2, 6,14, 16)]
+
+#exploración
+ggplot(na.omit(casen_mayores)) +
+  geom_bar(aes(sexo2, fill=as.factor(multidimensional_5)), position = "fill")
+
+# fit
+logit.model <- glm(multidimensional_5 ~ sexo_cod + es_indigena_cod + sexo_cod:es_indigena_cod,
+                   data = df_trabajo, family = binomial(link = "probit"))
+
+summary(logit.model)
+
+
+
+
+
+
 
 
