@@ -33,12 +33,20 @@ casen_mayores$sexo2 <- factor(casen_mayores$sexo2,
 # convierto quintiles a números romanos, porque bonito
 casen_mayores$romano <- as.factor( paste0( as.roman(casen_mayores$qaut)) )
 
+# creo un df sin valores NA
+casen_mayores2 <- na.omit(casen_mayores)
+
+# creo un df para plotear frecuencia acumulada
+quintil_df <- casen_mayores2 %>%
+  group_by(sexo2, romano) %>%
+  summarize(n = n()) %>%
+  mutate(perc = n/sum(n) )
 
 # ploteo los quintiles autónomos por categoría interseccional
-ggplot(na.omit(casen_mayores), aes(x=sexo2, fill=romano))+
-  geom_bar(position = "fill") +
-  geom_text(aes(label=scales::percent(..count../sum(..count..))),
-            stat='count',position=position_fill(vjust=0.5))+
+ggplot(quintil_df, aes(x=sexo2, y = perc, fill = romano) ) +
+  geom_bar(stat = "identity", position = "fill") +
+  geom_text(aes(label= scales::percent(perc)), 
+            position = position_stack(vjust = .5) )+
   theme_bw() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   labs(x="", y= "Proporción", fill= "Quintil autónomo\nnacional")
