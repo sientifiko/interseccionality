@@ -1,8 +1,6 @@
 library(ggplot2); library(tidyverse); library(stringr); library(stargazer)
 
 
-# CAMBIAR TODO ESTO A RELACIÓN ONVRE VS INDÍGENA!!!!!!
-
 # desactivamos la notación científica, y redondeamos a dos
 options(scipen = 999, digits = 2)
 
@@ -71,7 +69,6 @@ ggplot(multidimensional, aes(sexo2, y= perc, fill = as.factor(multidimensional_5
   labs(x="", y= "Proporción", fill= "Pobreza\nmultidimensional")
 
 # cambiar orden de es indigena
-
 casen_mayores2$es_indigena <- relevel(casen_mayores2$es_indigena, "No indigena")
 
 # Hay intereacción??
